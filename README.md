@@ -1,5 +1,28 @@
-# README.md
+# Algorithm 정리
 
-### It's a repository of things to record among the problems I solved.
-### Most of the problems I solved are the Baekjoon algorithm and the Programmers. 
-### If you want a more detailed solution, search for fightnyy in Baekjoon Algorithm.
+* 제가 여태 푼 알고리즘을 정리한 저장소 입니다. 풀이한 사이트는 아래와 같습니다.
+    * 백준
+    * 프로그래머스
+    * leetcode
+
+* 현재 백준은 39문제, 프로그래머스는 34개, leetcode는 67개 입니다.
+
+### 앞으로의 계획
+
+* ##### 백준
+    백준은 상당히 [좋은 사이트](https://covenant.tistory.com/224) 를 최근에 하나 발견했습니다. 백준 문제 뿐만 아니라 주니어 개발자가 다뤄야하는 여러가지를 고심해서 블로그를 작성하셔서 굉장히 많은 도움을 받을 거 같습니다.
+    
+
+* ##### Programmers
+    프로그래머스는 카카오에서 나온 문제를 풀어볼 계획입니다. 단 2017년은 C++, JAVA로 되어있어서 풀기가 조금 힘들거 같습니다. 물론 풀 수는 있지만 답을 맞춰보기가 힘들거 같아서 ㅠㅠ 그래서 그 외에의 카카오 문제들은 모두 풀어볼거 같습니다.
+
+* ##### leetcode
+    저는 몰랐는데 [이 책](https://github.com/onlybooks/algorithm-interview)을 상길북이라고 부르더라구요 개인적으로도 정말 저자분께서 열심히 고심하셔서 만든거 같아서 여기 있는 문제들을 풀고 있습니다.(저도 오탈자 몇개를 고치는데 기여를 했습니다. 그냥 그렇다구요 하하하..... 이렇게라도 끼워보고 싶었습니다.)
+
+* ##### 폴더 정리
+    그냥 문제를 풀어서 어떤게 어떤 문제인지를 알 수가 없습니다. 그래서 각 풀이를 정리해놓을 계획입니다. 
+    > ex DFS
+          |-----BOJ 10852.py
+          |-----BOJ 2314.py
+          
+                
