@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2021, Dialobot. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import torch.nn.functional as F
+import torch
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+from transformers import get_cosine_schedule_with_warmup
+from torch.optim.lr_scheduler import LambdaLR
+from torch.optim import Optimizer, AdamW
+from torch.utils.data import DataLoader
+from typing import Dict, Tuple, List
+from transformers import MBartForConditionalGeneration, MBart50TokenizerFast
+import pytorch_lightning as pl
+import sys
+from pytorch_lightning.callbacks import ModelCheckpoint
+
+
+class BartForSeq2SeqLM(pl.LightningModule):
+    def __init__(self, src_lang=None, tgt_lang=None):
+        super().__init__()
+        self.batch_size = 4
+        self.lr = 3e-5
+        self.src_lang = "ko_KR"
+        self.tgt_lang = "ko_KR"
+        self.model = MBartForConditionalGeneration.from_pretrained(
+            "facebook/mbart-large-en-ro"
+        )
+        self.warmup_steps = 100
+
+    def forward(self, batch):
+        model_inputs, labels = batch
+        out = self.model(**model_inputs, labels=labels)
+        return out
+
+    def training_step(self, batch, batch_idx):
+        """Training steps"""
+        out = self.forward(batch)
+        loss = out["loss"]
+        self.log("train_loss", loss)
+        return loss
+
+    @torch.no_grad()
+    def validation_step(self, batch, batch_idx) -> Dict:
+        """Validation steps"""
+        out = self.forward(batch)
+        loss = out["loss"]
+        self.log("val_loss", loss, on_step=True, prog_bar=True, logger=True)
+        return loss
+
+    def test_step(self, batch, batch_idx):
+        while True:
+            user_input = input(">>>User :")
+
+            if user_input == "stop":
+                break
+            else:
+                inputs = self.tokenizer(user_input, return_tensors="pt")
+                translated_tokens = self.model.generate(
+                    **inputs,
+                    decoder_start_token_id=self.tokenizer.lang_code_to_id[self.tgt_lang]
+                )
+                print(
+                    self.tokenizer.batch_decode(
+                        translated_tokens, skip_special_tokens=True
+                    )[0]
+                )
+
+    def configure_optimizers(self) -> Tuple[List[Optimizer], List[LambdaLR]]:
+        """
+        Configure optimizers and lr schedulers
+
+        Returns:
+            (Tuple[List[Optimizer], List[LambdaLR]]): [optimizers], [schedulers]
+        """
+
+        optimizer = AdamW([p for p in self.parameters() if p.requires_grad], lr=self.lr)
+        # scheduler = get_cosine_schedule_with_warmup(optimizer, num_warmup_steps=self.warmup_steps, num_training_steps=int(len(self.train_dataloader())))
+
+        return {"optimizer": optimizer}
+
+    def train_dataloader(self):
+        return DataLoader(
+            PAWS_X("x-final/ko/translated_train.tsv", "ko_KR", "ko_KR", 128),
+            batch_size=self.batch_size,
+            pin_memory=True,
+            num_workers=8,
+            shuffle=True,
+        )
+
+    def val_dataloader(self):
+        return DataLoader(
+            PAWS_X("x-final/ko/dev_2k.tsv", "ko_KR", "ko_KR", 128),
+            num_workers=8,
+            batch_size=self.batch_size,
+            pin_memory=True,
+        )
+
+    def test_dataloader(self):
+        return DataLoader(
+            PAWS_X("x-final/ko/test_2k.tsv", "ko_KR", "ko_KR", 128),
+            num_workers=8,
+            batch_size=self.batch_size,
+            pin_memory=True,
+        )
+
+
+if __name__ == "__main__":
+    # trainer = pl.Trainer(gpus=None)
+    trainer = pl.Trainer(
+        gpus=1,
+        callbacks=[
+            EarlyStopping(monitor="val_loss"),
+            ModelCheckpoint(
+                dirpath="./drive/MyDrive/mbart_ckpt",
+                monitor="val_loss",
+                filename="paraphrase_mbart_{epoch:02d}-{val_loss:.2f}",
+                save_top_k=-1,
+                mode="min",
+            ),
+        ],
+        progress_bar_refresh_rate=20,
+    )
+    model = BartForSeq2SeqLM("ko_KR", "ko_KR")
+    trainer.fit(model)
