@@ -22,7 +22,7 @@
 #                 except:
 #                     continue
 #     result = -float('inf')
-    
+
 #     for c in cnds:
 #         tmp = 0
 #         for idx in c:
@@ -40,6 +40,8 @@
 
 import sys
 input = sys.stdin.readline
+
+
 def solve(grapes):
     dp = [0] * (len(grapes))
     if len(grapes) == 1:
@@ -49,7 +51,8 @@ def solve(grapes):
     dp[1] = grapes[1]
     dp[2] = grapes[2]+grapes[1]
     for i in range(3, len(grapes)):
-        dp[i] = max(dp[i-1], grapes[i] + dp[i-2] , grapes[i]+ grapes[i-1] +dp[i-3])
+        dp[i] = max(dp[i-1], grapes[i] + dp[i-2],
+                    grapes[i] + grapes[i-1] + dp[i-3])
     return max(dp)
 
 
