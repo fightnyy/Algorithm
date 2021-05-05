@@ -1,84 +1,67 @@
-# from itertools import combinations
-# from copy import deepcopy
-# import sys
-
-# input = sys.stdin.readline
-
-# """
-# a, n, t, i, c
-# """
-
-
-# if __name__ == "__main__":
-#     N, K = map(int, input().split())
-#     answer = -1
-#     tmp_list = []
-#     c_list = []
-#     for _ in range(N):
-#         tmp_list.append(input())
-#     AK = K - 5
-#     if K < 5:
-#         print(0)
-#         sys.exit(1)
-
-#     else:
-#         for word in tmp_list:
-#             c_list += list(word.strip("antic"))
-
-#         c_list = list(set(c_list))
-#         for c in combinations(c_list, AK):
-#             cnt = 0
-#             for v in tmp_list:
-#                 if len(v.strip("".join(c) + "antic")) == 0:
-#                     cnt += 1
-#             answer = max(answer, cnt)
-#     print(answer)
-import sys
+"""
+A, N, T, I, C
+"""
 from itertools import combinations
-from pdb import set_trace
+
+import sys
 
 input = sys.stdin.readline
 
-# ord(): 함수의 괄호 안에 문자열을 입력하면 문자에 해당하는 아스키코드를 반환한다.
-def convert(x):
-    return ord(x) - ord("a")
 
+def convert(characters):
+    uni = []
+    for c in characters:
+        uni.append(ord(c) - ord("a"))
 
-def word2square(arr):
-    result = 0
-    for a in arr:
-        result |= 1 << a
-    return result
+    return uni
 
 
 if __name__ == "__main__":
-    n, k = map(int, input().split())
-    first_word = set([convert(a) for a in ["a", "c", "i", "n", "t"]])
-    base = 0
-    for i in first_word:
-        base |= 1 << i
-    arr = [set(map(convert, input().strip())) for _ in range(n)]
-    # set_trace()
-    squareword = [word2square(a) for a in arr]
-    set_trace()
+    N, K = map(int, input().split())
+    word_list = []
+    remains = K - 5
+    result = 0
 
-    candidates = set().union(*arr)
-    candidates -= first_word
-    answer = 0
-    if k < 5:
+    set_of_strips = set()
+    for _ in range(N):
+        tmp = input().strip()
+        word_list.append((tmp))
+        set_of_strips = set_of_strips.union(set(tmp.strip("antic")))
+    if remains < 0:
         print(0)
-    else:
-        if len(candidates) <= (k - 5):
-            print(n)
-        else:
-            for c in combinations(candidates, k - 5):
-                t_ans = 0
-                temp = base
-                for i in c:
-                    temp |= 1 << i
-                temp ^= (1 << 26) - 1  # 다 있는거랑 xor 없는거만 1 나옴
-                for a in squareword:
-                    if temp & a == 0:  # 다 커버하면
-                        t_ans += 1
-                answer = max(answer, t_ans)
-            print(answer)
+        sys.exit(0)
+
+    if len(set_of_strips) <= remains:
+        print(N)
+        sys.exit(0)
+    base_uni = convert(("a", "n", "t", "i", "c"))
+    base = 1
+    for u in base_uni:
+        base |= 1 << u
+    uni_list = convert(set_of_strips)
+    everychar_uni = (1 << 26) - 1
+    n_word_list = []
+    for word in word_list:
+        tmp = 1
+        for c in word:
+            tmp |= 1 << (ord(c) - ord("a"))
+        n_word_list.append(tmp)
+    import pdb
+
+    for cnd in combinations(uni_list, remains):
+        # pdb.set_trace()
+        t_r = 0
+        tmp = base
+        for char in cnd:
+            tmp |= 1 << char
+        tmp ^= everychar_uni
+        for str in n_word_list:
+            # # if tmp == 66445050:
+            # #     import pdb
+
+            #     pdb.set_trace()
+            if tmp & str == 0:
+                t_r += 1
+
+        result = max(result, t_r)
+    print(result)
