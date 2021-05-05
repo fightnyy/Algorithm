@@ -76,9 +76,9 @@ if __name__ == "__main__":
                 temp = base
                 for i in c:
                     temp |= 1 << i
-                temp ^= (1 << 26) - 1
+                temp ^= (1 << 26) - 1  # 다 있는거랑 xor 없는거만 1 나옴
                 for a in squareword:
-                    if temp & a == 0:
+                    if temp & a == 0:  # 다 커버하면
                         t_ans += 1
                 answer = max(answer, t_ans)
             print(answer)
