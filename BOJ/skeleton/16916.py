@@ -2,7 +2,7 @@ def KMPSearch(pat, txt):
     M = len(pat)
     N = len(txt)
 
-    lps = [0]*M
+    lps = [0] * M
 
     # Preprocess the pattern
     computeLPS(pat, lps)
@@ -18,16 +18,17 @@ def KMPSearch(pat, txt):
         elif pat[j] != txt[i]:
             # j!=0인 경우는 짧은 lps에 대해 재검사
             if j != 0:
-                j = lps[j-1]
+                j = lps[j - 1]
             # j==0이면 일치하는 부분이 없으므로 인덱스 증가
             else:
                 i += 1
 
         # Pattern을 찾은 경우
         if j == M:
-            print("Found pattern at index " + str(i-j))
+            print("Found pattern at index " + str(i - j))
             # 이전 인덱스의 lps값을 참조하여 계속 검색
-            j = lps[j-1]
+            j = lps[j - 1]
+
 
 def computeLPS(pat, lps):
     leng = 0  # length of the previous longest prefix suffix
@@ -44,17 +45,18 @@ def computeLPS(pat, lps):
             # 일치하지 않는 경우
             if leng != 0:
                 # 이전 인덱스에서는 같았으므로 leng을 줄여서 다시 검사
-                leng = lps[leng-1]
+                leng = lps[leng - 1]
                 # 다시 검사해야 하므로 i는 증가하지 않음
             else:
                 # 이전 인덱스에서도 같지 않았다면 lps[i]는 0 이고 i는 1 증가
                 lps[i] = 0
                 i += 1
 
+
 # 조금 더 긴 텍스트
 # txt = "ABABDABACDABABCABAB"
 # pat = "ABABCABAB"
 # 본문에서 다룬 예제
-txt = 'ABXABABXAB'
-pat = 'ABXAB'
+txt = "ABXABABXAB"
+pat = "ABXAB"
 print(KMPSearch(pat, txt))
