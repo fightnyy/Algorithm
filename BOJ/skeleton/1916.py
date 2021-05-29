@@ -1,5 +1,3 @@
-
-
 # import sys
 # import heapq
 # from pdb import set_trace
@@ -10,12 +8,12 @@
 #     q = []
 #     dist = [float('inf')]*N
 #     dist[start-1] = 0 # 본인과 본인과의 거리는 0으로 초기화
-#     heapq.heappush(q, [0, start-1]) 
+#     heapq.heappush(q, [0, start-1])
 #     # set_trace()
-#     while q: 
+#     while q:
 #         # set_trace()
 #         cost, pos = heapq.heappop(q) #도착지, 소요시간
-#         for c,p in edges[pos]: 
+#         for c,p in edges[pos]:
 #             c+= cost
 #             if c <= dist[p] :
 #                 dist[p] = c
@@ -38,10 +36,6 @@
 #     print(dijkstra(N, start, end, edges))
 
 
-
-
-
-
 # #     5
 # # 8
 # # 1 2 2
@@ -55,23 +49,23 @@
 # # 1 5
 import heapq
 import sys
+
 input = sys.stdin.readline
+
+
 def dijkstra(graph, start, end, N):
-    q = [[0, start-1]]
-    dist = [float('inf')]*N
-    dist[start-1] = 0
+    q = [[0, start - 1]]
+    dist = [float("inf")] * N
+    dist[start - 1] = 0
     while q:
         cs, st = heapq.heappop(q)
         for c, s in graph[st]:
-            c+=cs
+            c += cs
             if c < dist[s]:
-                dist[s]=c
-                heapq.heappush(q,[c,s])
-    return dist[end-1]
+                dist[s] = c
+                heapq.heappush(q, [c, s])
+    return dist[end - 1]
 
-
-
-    
 
 if __name__ == "__main__":
     N = int(input())
@@ -81,7 +75,7 @@ if __name__ == "__main__":
         graph[i] = []
     for _ in range(M):
         start, end, cost = map(int, input().split())
-        graph[start-1].append([cost, end-1])
+        graph[start - 1].append([cost, end - 1])
     start, end = map(int, input().split())
     # print(graph)
     print(dijkstra(graph, start, end, N))
