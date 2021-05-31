@@ -28,3 +28,5 @@ class Solution:
         for i in range(3, len(nums)):
             dp[i] = max(dp[i - 2], dp[i - 3]) + nums[i]
         return max(dp.values())
+
+    
