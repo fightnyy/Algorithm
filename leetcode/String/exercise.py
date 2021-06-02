@@ -1,42 +1,31 @@
 from torch import nn
+
 from models.layers.scale_dot_product_attention import ScaleDotProductAttention
 
 
 class MultiHeadAttention(nn.Module):
 
-    def __init__(self, d_model, n_head):#head의 갯수와 모델의 dimension
+    def __init__(self, d_model, n_head):
         super(MultiHeadAttention, self).__init__()
-        self.n_head = n_head
-        self.attention = ScaleDotProductAttention()
-        """
-        모델을 알아서 만들어 보세요
-        """
+        self.attn = ScaleDotProductAttention()
         self.w_q = nn.Linear(d_model, d_model)
         self.w_k = nn.Linear(d_model, d_model)
         self.w_v = nn.Linear(d_model, d_model)
-        
+        self.head = n_head
         self.w_concat = nn.Linear(d_model, d_model)
 
     def forward(self, q, k, v, mask=None):
         # 1. dot product with weight matrices
-        q=self.w_q(q)
-        w=self.w_k(k)
-        v=self.w_v(v)
+        query = self.w_q(q)
+        key = self.w_k(k)
+        value = self.w_v(v)
 
-        # 2. split tensor by number of heads
-        q=self.split(q)
-        w=self.split(w)
-        v=self.split(v)
-        # 3. do scale dot product to compute similarity
-        out, attention = self.attention(q, k, v, mask=mask)
-
-        # 4. concat and pass to linear layer
-        out = self.concat(out)
-        out = self.w_concat(out)
-
+        d_query = self.split(query)
+        d_key = self.split(key)
+        d_value = self.split(value)
         # 5. visualize attention map
         # TODO : we should implement visualization
-
+        out, score = self.attention(d_query, d_key, d_value, mask=mask)
         return out
 
     def split(self, tensor):
@@ -45,10 +34,9 @@ class MultiHeadAttention(nn.Module):
         :param tensor: [batch_size, length, d_model]
         :return: [batch_size, head, length, d_tensor]
         """
-        batch_size, length, d_model = tensor.size()
-
-        d_tensor = d_model // self.n_head
-        tensor = tensor.view(batch_size, self.n_head, length, d_tensor)
+        batch, seq_len, n_dim = tensor.size()
+        d_head = n_dim//self.head
+        tensor = tensor.view(batch, self.head, seq_len, d_head)
         # it is similar with group convolution (split by number of heads)
 
         return tensor
@@ -59,8 +47,7 @@ class MultiHeadAttention(nn.Module):
         :param tensor: [batch_size, head, length, d_tensor]
         :return: [batch_size, length, d_model]
         """
-        batch_size, head, length, d_tensor = tensor.size()
-        d_model = head * d_tensor
-
-        tensor = tensor.view(batch_size, length, d_model)
+        batch, head, length, d_tensor = tensor.size()
+        n_dim = head * d_tensor
+        tensor=tensor.view(batch, length, n_dim)
         return tensor
