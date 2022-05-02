@@ -4,13 +4,9 @@ def solution(n, s):
     result = [di] * n
     if n > s:
         return [-1]
-    elif re ==0 :
+    elif re == 0:
         return [di] * n
-    else :
+    else:
         for i in range(re):
-            result[-(i+1)] += 1
+            result[-(i + 1)] += 1
         return result
-            
-        
-        
-        

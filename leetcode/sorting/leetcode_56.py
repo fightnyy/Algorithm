@@ -39,7 +39,7 @@ def merge(self, intervals: List[int]):
             merged[-1][1] = max(merged[-1][1], i[1])
 
         else:
-            merged += i,
+            merged += (i,)
     return merged
 
 

@@ -1,4 +1,5 @@
 from typing import List
+
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
@@ -6,9 +7,9 @@ from typing import List
 #         self.next = next
 class Solution:
     def sortList(self, head: ListNode) -> ListNode:
-        lst : List = []
+        lst: List = []
         tmp = head
-        while tmp :
+        while tmp:
             lst = append(tmp.val)
             tmp = tmp.next
         tmp = head
@@ -16,4 +17,3 @@ class Solution:
             tmp.val = v
             tmp = tmp.next
         return head
-        

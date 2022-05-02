@@ -4,7 +4,6 @@ from models.layers.scale_dot_product_attention import ScaleDotProductAttention
 
 
 class MultiHeadAttention(nn.Module):
-
     def __init__(self, d_model, n_head):
         super(MultiHeadAttention, self).__init__()
         self.attn = ScaleDotProductAttention()
@@ -35,7 +34,7 @@ class MultiHeadAttention(nn.Module):
         :return: [batch_size, head, length, d_tensor]
         """
         batch, seq_len, n_dim = tensor.size()
-        d_head = n_dim//self.head
+        d_head = n_dim // self.head
         tensor = tensor.view(batch, self.head, seq_len, d_head)
         # it is similar with group convolution (split by number of heads)
 
@@ -49,5 +48,5 @@ class MultiHeadAttention(nn.Module):
         """
         batch, head, length, d_tensor = tensor.size()
         n_dim = head * d_tensor
-        tensor=tensor.view(batch, length, n_dim)
+        tensor = tensor.view(batch, length, n_dim)
         return tensor

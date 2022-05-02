@@ -10,17 +10,17 @@ def bfs(f, graph, visited):
     while q:
         # set_trace()
         node, cnt = q.popleft()
-        if visited[node-1] != -1:
+        if visited[node - 1] != -1:
             continue
         else:
-            visited[node-1] = cnt
+            visited[node - 1] = cnt
             for v in graph[node]:
-                q.append([v, cnt+1])
+                q.append([v, cnt + 1])
     return visited
 
 
 def solution(n, edge):
-    visited = [-1]*n
+    visited = [-1] * n
     answer = 0
     cnt = 0
     graph = defaultdict(list)

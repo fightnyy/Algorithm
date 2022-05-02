@@ -6,7 +6,7 @@ def solution(orders, course):
     candidate = []
     answer = []
     for order in orders:
-        for i in range(2, len(order)+1):
+        for i in range(2, len(order) + 1):
             for c_tuple in list(combinations(order, i)):
                 c_str = "".join(sorted(c_tuple))
                 candidate.append(c_str)

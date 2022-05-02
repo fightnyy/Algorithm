@@ -1,53 +1,56 @@
 import sys
+
 input = sys.stdin.readline
+
+
 def solve(paren):
     stack = []
     for v in paren:
-        if v == ']':
+        if v == "]":
             t = 0
             while stack:
-                top=stack.pop()
-                if top == '[':
+                top = stack.pop()
+                if top == "[":
                     if t == 0:
                         t = 3
-                    else :
+                    else:
                         t *= 3
                     stack.append(t)
                     break
-                elif top == '(':
+                elif top == "(":
                     return 0
-                else :
-                    t+=top
-    
+                else:
+                    t += top
+
             if not stack:
                 return 0
 
-        elif v == ')':
+        elif v == ")":
             t = 0
             while stack:
-                top=stack.pop()
-                if top == '(':
+                top = stack.pop()
+                if top == "(":
                     if t == 0:
                         t = 2
-                    else :
+                    else:
                         t *= 2
                     stack.append(t)
                     break
-                elif top == '[':
+                elif top == "[":
                     return 0
-                else :
-                    t+=top
+                else:
+                    t += top
             if not stack:
                 return 0
-        else :
+        else:
             stack.append(v)
     try:
-        stack=sum(stack)
-    except :
+        stack = sum(stack)
+    except:
         return 0
     return stack
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     paren = input().rstrip()
     print(solve(list(paren)))
