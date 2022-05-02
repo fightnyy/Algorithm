@@ -9,17 +9,14 @@
 7. 마지막으로 "".join(stack) 을 return 해주면 끝!
 """
 
+
 def solution(number, k):
     stack = [number[0]]
-    for n in number[1:]: #1
-        while stack and stack[-1] < n and k != 0: #2 #4
-            stack.pop() #3
+    for n in number[1:]:  # 1
+        while stack and stack[-1] < n and k != 0:  # 2 #4
+            stack.pop()  # 3
             k -= 1
-        stack.append(n) #4
+        stack.append(n)  # 4
     if k > 0:
-        stack = stack [:-k] #6
-    return "".join(stack) #7
-        
-        
-                
-   
+        stack = stack[:-k]  # 6
+    return "".join(stack)  # 7

@@ -39,6 +39,7 @@
 #     print(solve(n_lst))
 
 import sys
+
 input = sys.stdin.readline
 
 
@@ -49,14 +50,15 @@ def solve(grapes):
     elif len(grapes) == 2:
         return sum(grapes)
     dp[1] = grapes[1]
-    dp[2] = grapes[2]+grapes[1]
+    dp[2] = grapes[2] + grapes[1]
     for i in range(3, len(grapes)):
-        dp[i] = max(dp[i-1], grapes[i] + dp[i-2],
-                    grapes[i] + grapes[i-1] + dp[i-3])
+        dp[i] = max(
+            dp[i - 1], grapes[i] + dp[i - 2], grapes[i] + grapes[i - 1] + dp[i - 3]
+        )
     return max(dp)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     num = int(input())
     grapes = [0]
     for _ in range(num):

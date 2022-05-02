@@ -6,11 +6,7 @@ input = sys.stdin.readline
 if __name__ == "__main__":
     n = int(input())
 
-
-
     heap = []
-
-
 
     for _ in range(n):
         tmp = int(input())
@@ -25,5 +21,5 @@ if __name__ == "__main__":
                     heapq.heappop(heap)
                 else:
                     break
-        else :
-            heapq.heappush(heap, [abs(tmp),tmp])
+        else:
+            heapq.heappush(heap, [abs(tmp), tmp])
